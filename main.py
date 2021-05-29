@@ -65,11 +65,9 @@ def read():
 
 
 def transfer_learning(nr_gen, train_images4d, train_labels, valid_images4d, valid_labels, test_images4d):
-    # Vom crea un model de bază folosindu-ne de modelul MobileNetV2.
     base_model = tf.keras.applications.MobileNetV2(input_shape=(50, 50, 3), include_top=False, weights="imagenet")
     base_model.trainable = False
 
-    # După vom crea un nou model folosindu-ne de cel de bază, după care vom folosi funcția GlobalAveragePooling.
     model = tf.keras.Sequential([base_model,
                                  tf.keras.layers.Conv2D(64, 3, padding="same", input_shape=(50, 50, 3)),
                                  tf.keras.layers.ELU(alpha=0.1),
@@ -79,13 +77,11 @@ def transfer_learning(nr_gen, train_images4d, train_labels, valid_images4d, vali
                                  tf.keras.layers.BatchNormalization(),
                                  tf.keras.layers.Dense(3, activation="softmax")])
 
-    # Compilăm modelul:
     base_learning_rate = 0.01
     model.compile(optimizer=tf.keras.optimizers.Adam(lr=base_learning_rate),
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(),
                   metrics=['accuracy'])
 
-    # Normalizăm:
     nparray_train_labels = np.array(train_labels)
     nparray_valid_labels = np.array(valid_labels)
 
